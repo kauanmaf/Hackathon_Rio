@@ -1,0 +1,16 @@
+:root {
+	--clr-dark: #0f172a;
+	--clr-light: #f1f5f9;
+	--clr-accent: #e11d48;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body{
+	display: flex;
+	justify-content: center;
+}

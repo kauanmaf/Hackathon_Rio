@@ -1,0 +1,28 @@
+/* BASE STYLES */
+.container {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	border: 10px solid var(--clr-dark);
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.item {
+	width: 150px;
+	height: 150px;
+	background-color: #fb7185;
+	padding: 1em;
+	font-weight: 700;
+	color: var(--clr-light);
+	border: 10px solid var(--clr-accent);
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.item1{
+	width: 50%;
+}
