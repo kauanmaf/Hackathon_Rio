@@ -9,7 +9,7 @@ export default function Sidebar() {
                     
             <ul>
                 <li><a href="/">Início</a></li>
-                <li><a href="/sobre">placeholder</a></li>
+                <li><a href="/qualidade_da_agua">Qualidade da Água</a></li>
                 <li><a href="/noticias">placeholder</a></li>
                 <li><a href="/atividades">placeholder</a></li>
                 <li><a href="/esportes">placeholder</a></li>

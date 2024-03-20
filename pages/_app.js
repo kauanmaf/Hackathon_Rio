@@ -3,6 +3,8 @@ import Head from "next/head"
 
 import "../src/styles/global.css"
 import "../src/styles/components/sidebar.css"
+import "../src/styles/components/modelo_pagina.css"
+import "../src/styles/pages/qualidade_da_agua.css"
 
 
 export default function App({ Component, pageProps }) {
