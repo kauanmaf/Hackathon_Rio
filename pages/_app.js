@@ -2,6 +2,7 @@ import Head from "next/head"
 
 
 import "../src/styles/global.css"
+import "../src/styles/components/sidebar.css"
 
 
 export default function App({ Component, pageProps }) {
