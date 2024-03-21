@@ -16,6 +16,10 @@ export default function Sidebar() {
                 <li><a href="/locacoes">placeholder</a></li>
                 <li><a href="/contato">placeholder</a></li>
             </ul> 
+
+            <div className="logo_prefeitura">
+                <img src="/images/prefeitura_logo.png" alt="Logo" />
+            </div>
     
 
         </header>
