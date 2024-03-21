@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import sys
 
 # Dados Gerais
 dg_bairros = pd.read_csv("api/database_csv/bairro.csv")
