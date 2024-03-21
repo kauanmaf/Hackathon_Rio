@@ -11,12 +11,12 @@ export default function App({ Component, pageProps }) {
     return (
         <>
             <Head>
-                <title>Cafe com Leide</title>
+                <title>Dash Rio Águas</title>
 
                 {/*SEO(search engine otimization)*/}
                 <meta name="description" content="" />{/*Descrição para o site*/}
                 <meta name="keywords" content=""/>{/*Palavras chave separadas por vírgulas*/}
-                <meta name="author" content="FGV Jr." />{/*Autor do site*/}
+                <meta name="author" content="grupo DGKL" />{/*Autor do site*/}
 
                 {/*SMO(social media otimization)*/}
                 <meta property="og:title" content="" />
