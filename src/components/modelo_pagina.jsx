@@ -8,10 +8,14 @@ export default function Pagina(props) {
     return (
         <div className="pagina">
             <Sidebar/>
-            <h1>{titulo}</h1>
 
-            <div className="graficos">
-                {props.children}
+            <div className="Corpo">
+                <img src="/images/background.jpg"></img>
+                <h1>{titulo}</h1>
+
+                <div className="graficos">
+                    {props.children}
+                </div>
             </div>
         </div>
     )

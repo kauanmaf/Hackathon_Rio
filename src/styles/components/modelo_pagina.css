@@ -1,18 +1,33 @@
 .pagina h1 {
     position: absolute;
-    left: 300px;
-    color: rgb(20, 137, 183);
+    left: 30px;
+    color: rgb(21, 118, 157);
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 300;
     top: -5px;
+}
+
+.Corpo {
+    position: absolute;
+    width: 80%;
+    height: 100%;
+    left: 20%;
+    top: 0px;
+    background-color: pink;
+}
+
+.Corpo img {
+    width: 100%;
+    height: 100%;
+    position: fixed;
 }
 
 .graficos {
     display: flex;
     flex-wrap: wrap;
     position: absolute;
-    top: 80px;
-    left: 290px;
+    top: 60px;
+    left: 10px;
     width: 80%;
     height: 90%;
 }
