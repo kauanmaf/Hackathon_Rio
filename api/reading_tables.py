@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import sys
 
 # Dados Gerais
 dg_bairros = pd.read_csv("api/database_csv/bairro.csv")
@@ -8,8 +9,9 @@ dg_grid = pd.read_csv("api/database_csv/h3_grid_res8.csv")
 
 # # Dados de COR, 1746, e pontos supervisionados
 cor_ocorrencias = pd.read_csv("api/database_csv/ocorrencias.csv")
+cor_ocorrencias_pop_filtrado = pd.read_csv("api/database_csv/ocorrencias_pop_filtrado.csv")
 cor_pop = pd.read_csv("api/database_csv/procedimento_operacional_padrao.csv")
-# datario_chamado_1746 = pd.read_csv("api/database_csv/chamado.csv")
+datario_chamado_1746_filtrado = pd.read_csv("api/database_csv/chamado_2.csv")
 ra_psalagamento = pd.read_csv("api/database_csv/ponto_supervisionado_alagamento.csv")
 
 # # Dados Pluviométricos
