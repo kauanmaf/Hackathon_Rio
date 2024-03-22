@@ -20,8 +20,9 @@ cor_est_inea = pd.read_csv("api/database_csv/estacoes_inea.csv")
 cor_est_cemaden = pd.read_csv("api/database_csv/estacoes_cemaden.csv")
 cor_est_websirene = pd.read_csv("api/database_csv/estacoes_websirene.csv")
 
-# cor_tx_precip_websirene = pd.read_csv("api/database_csv/taxa_precipitacao_websirene.csv")
-cor_tx_precip_alerta_rio = pd.read_csv("api/database_csv/taxa_precipitacao_alertario_5min.csv")
+cor_tx_precip_websirene = pd.read_csv("api/database_csv/taxa_precipitacao_websirene.csv")
+cor_tx_precip_alerta_rio_5min = pd.read_csv("api/database_csv/taxa_precipitacao_alertario_5min.csv")
+datario_tx_precip_alerta_rio = pd.read_csv("api/database_csv/taxa_precipitacao_alertario.csv")
 cor_tx_precip_inea = pd.read_csv("api/database_csv/taxa_precipitacao_inea.csv")
 cor_tx_precip_cemaden = pd.read_csv("api/database_csv/taxa_precipitacao_cemaden.csv")
 

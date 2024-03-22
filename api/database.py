@@ -46,3 +46,14 @@ project_id = 'hackathon-fgv-417718'
 # df = bd.read_sql(query, billing_project_id=project_id)
 #     # Save the DataFrame to a CSV file with the table name
 # df.to_csv(f"api/database_csv/{table_name}.csv", index=False)
+
+# query = "SELECT * FROM `hackathon-fgv-417718.rj_cor.taxa_precipitacao_websirene` WHERE acumulado_chuva_24_h > 0;"
+# df = bd.read_sql(query, billing_project_id=project_id)
+# table_name = "taxa_precipitacao_websirene"
+# df.to_csv(f"api/database_csv/{table_name}.csv", index=False)
+
+
+query = "SELECT * FROM `hackathon-fgv-417718.datario.alerta_rio_hist`"
+df = bd.read_sql(query, billing_project_id=project_id)
+table_name = "taxa_precipitacao_alertario"
+df.to_csv(f"api/database_csv/{table_name}.csv", index=False)
