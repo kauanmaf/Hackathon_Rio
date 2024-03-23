@@ -20,10 +20,8 @@ export default function TesteComponent() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get('http://127.0.0.1:5000/teste');
+				const response = await axios.get('api/teste');
 				const data = response.data
-				console.log(data)
-				console.log(Object.values(data.Species))
 				setDadosGrafico([{
 					x: Object.values(data.Species),
 					y: Object.values(data.PetalLengthCm),
