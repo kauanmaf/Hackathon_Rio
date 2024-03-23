@@ -1,0 +1,2 @@
+QUART_APP=api.py
+QUART_ENV=development

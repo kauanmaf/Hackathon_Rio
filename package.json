@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "flask": "cd api && flask run",
-    "api-dev": "concurrently \"npm run dev\" \"npm run flask\"",
+    "quart": "cd api && quart run",
+    "api-dev": "concurrently \"npm run dev\" \"npm run quart\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
