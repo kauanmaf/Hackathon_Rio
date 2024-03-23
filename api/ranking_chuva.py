@@ -1,36 +1,32 @@
 from reading_tables import *
+from utils import *
 
-# Como criar um ranking de chuvas?
-print(cor_tx_precip_alerta_rio)
+# Lendo o csv
+datario_tx_precip_alerta_rio = pd.read_csv("database_csv/taxa_precipitacao_alertario.csv")
 
-# Filtrando o dataset para os dias nos quais houveram chuvas
-cor_tx_precip_alerta_rio = cor_tx_precip_alerta_rio[(cor_tx_precip_alerta_rio["acumulado_chuva_24h"]>0)]
+# Criando uma coluna com o horário preciso da medição
+datario_tx_precip_alerta_rio["data_hora"] = datario_tx_precip_alerta_rio["data_particao"] + ' ' + datario_tx_precip_alerta_rio["data_particao"]
 
-# Ordenando os dados por data
-cor_tx_precip_alerta_rio = cor_tx_precip_alerta_rio.sort_values(by='data_medicao', ascending=False)
+# Converter para datetime algumas das colunas
+datario_tx_precip_alerta_rio['data_hora'] = pd.to_datetime(datario_tx_precip_alerta_rio['data_hora'])
+datario_tx_precip_alerta_rio['data_particao'] = pd.to_datetime(datario_tx_precip_alerta_rio['data_particao'])
 
-# # Transformando os dados em mm/h
+#   Ordenando por data o dataframe
+datario_tx_precip_alerta_rio = datario_tx_precip_alerta_rio.sort_values(by='data_hora', ascending=True)
 
-colunas_acumulado_chuva = ['acumulado_chuva_5min', 'acumulado_chuva_10min', 'acumulado_chuva_15min',
-                           'acumulado_chuva_30min', 'acumulado_chuva_1h', 'acumulado_chuva_2h',
-                           'acumulado_chuva_3h', 'acumulado_chuva_4h', 'acumulado_chuva_6h',
-                           'acumulado_chuva_12h', 'acumulado_chuva_24h']
+# Preenchendo valores NaN com 0 nas colunas especificadas
+colunas_chuva = ['acumulado_chuva_15_min', 'acumulado_chuva_1_h', 'acumulado_chuva_4_h', 'acumulado_chuva_24_h']
+datario_tx_precip_alerta_rio[colunas_chuva] = datario_tx_precip_alerta_rio[colunas_chuva].fillna(0)
+datario_tx_precip_alerta_rio[colunas_chuva] = datario_tx_precip_alerta_rio[colunas_chuva].astype(float)
 
-# Converter os acumulados de chuva para mm/h
-for coluna in colunas_acumulado_chuva:
-    # Extrair o período de tempo da coluna
-    tempo_str = coluna.split('_')[2]
-    if tempo_str[-3:] == "min":
-        tempo = int(tempo_str[:-3]) / 60
-    else:
-        tempo = int(tempo_str[:-1])
-    
-    # Converter para mm/h
-    cor_tx_precip_alerta_rio[coluna + '_mmh'] = cor_tx_precip_alerta_rio[coluna] / tempo
+# Utilizando a função para criar as colunas que desejamos, com base na soma móvel.
+datario_tx_precip_alerta_rio_red = datario_tx_precip_alerta_rio.loc[datario_tx_precip_alerta_rio['data_particao'].dt.year >= 2016].copy()
 
 
-cor_tx_precip_alerta_rio['data_medicao'] = pd.to_datetime(cor_tx_precip_alerta_rio['data_medicao'])
-print(cor_tx_precip_alerta_rio.shape)
+datario_tx_precip_alerta_rio_red = processamento_acumulado_chuva(datario_tx_precip_alerta_rio_red)
 
-dias_unicos = pd.unique(cor_tx_precip_alerta_rio['data_medicao'].dt.date)
-print(len(dias_unicos))
+datario_tx_precip_alerta_rio_red = ordenar_colunas(datario_tx_precip_alerta_rio_red)
+
+datario_tx_precip_alerta_rio_red = converte_mm_por_h(datario_tx_precip_alerta_rio_red)
+
+datario_tx_precip_alerta_rio_red = encontra_chuvas_mais_fortes()
