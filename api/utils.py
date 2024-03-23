@@ -2,6 +2,24 @@ import pandas as pd
 import numpy as np
 
 def criar_evento_chuvoso(df):
+    """
+    Cria eventos chuvosos com base na coluna 'acumulado_chuva_480_min'.
+
+    Parameters:
+    - df (DataFrame): DataFrame contendo os dados a serem processados.
+
+    Returns:
+    - DataFrame: DataFrame com uma nova coluna 'evento_chuvoso' indicando o evento chuvoso associado a cada linha.
+
+    Documentation:
+    Esta função identifica eventos chuvosos com base na coluna 'acumulado_chuva_480_min' do DataFrame fornecido.
+    Um evento chuvoso é considerado iniciado quando há acumulação de chuva após um período de ausência.
+    Cada evento é identificado por um ID único composto pelo ID da estação e um número sequencial de evento.
+    As linhas que não fazem parte de um evento chuvoso são marcadas com NaN na coluna 'evento_chuvoso'.
+
+    Exemplo de Uso:
+    >>> df_eventos = criar_evento_chuvoso(df_dados)
+    """
     # Calculate if each row is the start of an event
     df['evento_inicio'] = (df['acumulado_chuva_480_min'] != 0) & (df['acumulado_chuva_480_min'].shift(1) == 0)
     
@@ -21,6 +39,24 @@ def criar_evento_chuvoso(df):
 
 
 def processamento_acumulado_chuva(df):
+    """
+    Realiza o processamento de acumulado de chuva em um DataFrame por estação.
+
+    Parameters:
+    - df (DataFrame): DataFrame contendo os dados de precipitação por estação.
+
+    Returns:
+    - DataFrame: DataFrame resultante após o processamento de acumulado de chuva.
+
+    Documentation:
+    Esta função realiza o processamento de acumulado de chuva em um DataFrame, dividindo os dados por estação e aplicando a soma móvel em diferentes intervalos de tempo.
+    Para cada estação, o acumulado de chuva é calculado para intervalos de 30, 45, 90, 120, 360, 480 e 720 minutos, utilizando a coluna 'acumulado_chuva_15_min' como base.
+    Após o cálculo do acumulado de chuva, a função 'criar_evento_chuvoso' é aplicada para identificar e marcar os eventos chuvosos em cada estação.
+    O resultado final é um DataFrame contendo os dados processados.
+
+    Example:
+    >>> df_processado = processamento_acumulado_chuva(df_dados)
+    """
     dfs_estacoes = []
     estacoes = df["id_estacao"].unique().tolist()
 
@@ -42,6 +78,23 @@ def processamento_acumulado_chuva(df):
     return df
 
 def ordenar_colunas(df):
+    """
+    Ordena as colunas de um DataFrame de acordo com uma ordem específica.
+
+    Parameters:
+    - df (DataFrame): DataFrame contendo os dados a serem ordenados.
+
+    Returns:
+    - DataFrame: DataFrame com as colunas ordenadas.
+
+    Documentation:
+    Esta função recebe um DataFrame e reordena suas colunas de acordo com uma ordem específica.
+    As colunas são ordenadas conforme a lista 'colunas_ordenadas', onde 'primary_key' e 'id_estacao' são mantidas no início,
+    seguidas pelas colunas de acumulado de chuva em diferentes intervalos de tempo, e depois pelas colunas restantes, incluindo 'horario', 'data_particao', 'data_hora' e 'evento_chuvoso'.
+
+    Exemplo de Uso:
+    >>> df_ordenado = ordenar_colunas(df_dados)
+    """
     colunas_ordenadas = [
     'primary_key','id_estacao', 'acumulado_chuva_15_min', 'acumulado_chuva_30_min','acumulado_chuva_45_min','acumulado_chuva_1_h','acumulado_chuva_90_min',
     'acumulado_chuva_120_min', 'acumulado_chuva_4_h', 'acumulado_chuva_360_min','acumulado_chuva_480_min', 'acumulado_chuva_720_min','acumulado_chuva_24_h',
@@ -50,6 +103,23 @@ def ordenar_colunas(df):
     return df
 
 def converte_mm_por_h(df):
+    """
+    Converte as unidades de medida de acumulado de chuva de mm para mm/h.
+
+    Parameters:
+    - df (DataFrame): DataFrame contendo os dados de acumulado de chuva em mm.
+
+    Returns:
+    - DataFrame: DataFrame com os dados de acumulado de chuva convertidos para mm/h.
+
+    Documentation:
+    Esta função recebe um DataFrame contendo dados de acumulado de chuva em milímetros (mm) e converte esses valores para milímetros por hora (mm/h).
+    A conversão é aplicada a todas as colunas de acumulado de chuva especificadas em 'colunas_tempo', dividindo os valores pela quantidade de horas correspondente ao intervalo de tempo.
+    Por exemplo, para as colunas com intervalo de tempo expresso em horas, os valores são divididos pelo número de horas. Para as colunas com intervalo de tempo expresso em minutos, os valores são divididos pelo número de minutos convertidos em horas.
+
+    Exemplo de Uso:
+    >>> df_convertido = converte_mm_por_h(df_dados)
+    """
     colunas_tempo = ['acumulado_chuva_15_min',
     'acumulado_chuva_30_min',
     'acumulado_chuva_45_min',
@@ -63,17 +133,47 @@ def converte_mm_por_h(df):
     'acumulado_chuva_480_min',
     'acumulado_chuva_720_min']
 
+
     for element in colunas_tempo:
         if element[-1] == 'h':
+            # Pegando a quantidade de hroas
             horas = int(element.split('_')[-2])
+            # Alterando o dataframe
             df[element] = df[element]/horas
         else:
+            # Pegando a quantidade de horas também
             minutos_h = int(element.split('_')[-2])/60
+            # Dividindo na equação
             df[element] = df[element]/minutos_h
     
     return df
 
 def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=None, quantidade_eventos=10, id_estacao=None):
+    """
+    Encontra as chuvas mais fortes em um DataFrame de dados meteorológicos.
+
+    Parameters:
+    - df (DataFrame): DataFrame contendo os dados meteorológicos.
+    - coluna_tempo (str): Nome da coluna usada para ordenar os eventos (por exemplo, 'acumulado_chuva_1_h').
+    - data_inicio (str, opcional): Data de início do período de busca (formato 'YYYY-MM-DD').
+    - data_fim (str, opcional): Data de término do período de busca (formato 'YYYY-MM-DD').
+    - quantidade_eventos (int, opcional): Número de eventos a serem retornados (padrão é 10).
+    - id_estacao (int, opcional): ID da estação meteorológica a ser filtrada.
+
+    Returns:
+    - tuple: Uma tupla contendo:
+        * Lista de identificadores dos eventos de chuva mais forte.
+        * DataFrame contendo os dados dos eventos de chuva mais forte.
+        * Dicionário contendo informações sobre cada evento de chuva mais forte.
+
+    Documentation:
+    Esta função recebe um DataFrame contendo dados meteorológicos e encontra as chuvas mais fortes com base em uma coluna de tempo especificada.
+    É possível filtrar os eventos por período de tempo e/ou estação meteorológica.
+    A função retorna uma lista com os identificadores dos eventos de chuva mais forte, um DataFrame com os dados desses eventos e um dicionário com informações sobre cada evento.
+
+    Example:
+    >>> eventos, df_eventos, dados_ranking = encontra_chuvas_mais_fortes(df_meteorologia, 'acumulado_chuva_1_h', data_inicio='2023-01-01', data_fim='2023-12-31', quantidade_eventos=5, id_estacao=1)
+    """
     # Filtrar o DataFrame pelas datas de início e fim, se fornecidas
     if data_inicio is not None and data_fim is not None:
         df = df[(df['data_particao'] >= data_inicio) & (df['data_particao'] <= data_fim)]
