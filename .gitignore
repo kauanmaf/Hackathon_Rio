@@ -39,10 +39,12 @@ next-env.d.ts
 # venv
 venv
 
-#arquivo
+# arquivo
 api/database_csv/taxa_precipitacao_websirene.csv
 api/database_csv/taxa_precipitacao_alertario.csv
 
+# tempcoderunner
+api/tempCodeRunnerFile.py
 
 __pycache__
 

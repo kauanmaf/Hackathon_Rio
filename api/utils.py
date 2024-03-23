@@ -73,7 +73,7 @@ def converte_mm_por_h(df):
     
     return df
 
-def chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=None, quantidade_eventos=10, id_estacao=None):
+def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=None, quantidade_eventos=10, id_estacao=None):
     # Filtrar o DataFrame pelas datas de início e fim, se fornecidas
     if data_inicio is not None and data_fim is not None:
         df = df[(df['data_particao'] >= data_inicio) & (df['data_particao'] <= data_fim)]
