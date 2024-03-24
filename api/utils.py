@@ -232,9 +232,12 @@ def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=Non
             latitude = None
             longitude = None
 
+        duracao_minutos = (data_fim_chuva - data_inicio_chuva).seconds / 60
+        duracao_horas = duracao_minutos / 60
+
         # Armazenando os resultados no dicionário dados_ranking
-        dados_ranking[f"{evento_chuvoso}"] = [data_inicio_chuva, data_fim_chuva, maior_chuva_evento, id_estacao_especifica, size_point, latitude, longitude]
+        dados_ranking[f"{evento_chuvoso}"] = [data_inicio_chuva, data_fim_chuva, maior_chuva_evento, id_estacao_especifica, size_point, latitude, longitude, duracao_minutos, duracao_horas]
    
     df_dados_ranking = pd.DataFrame.from_dict(dados_ranking, orient='index')
-
+    
     return chuvas_fortes, df_eventos, df_dados_ranking
