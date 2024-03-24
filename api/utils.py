@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
+
 
 def criar_evento_chuvoso(df):
     """
@@ -148,7 +150,7 @@ def converte_mm_por_h(df):
     
     return df
 
-def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=None, quantidade_eventos=10, id_estacao=None, df_latitudes=None):
+def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=None, quantidade_eventos=10, id_estacao=None, df_latitudes= None):
     """
     Encontra as chuvas mais fortes em um DataFrame de dados meteorológicos e também adiciona informações de latitude.
 
@@ -232,12 +234,29 @@ def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=Non
             latitude = None
             longitude = None
 
-        duracao_minutos = (data_fim_chuva - data_inicio_chuva).seconds / 60
+        # Convertendo as strings de data para objetos datetime
+        data_inicio_chuva = datetime.strptime(data_inicio_chuva, "%Y-%m-%d %H:%M:%S")
+        data_fim_chuva = datetime.strptime(data_fim_chuva, "%Y-%m-%d %H:%M:%S")
+
+        # Calculando a duração da chuva em minutos e horas
+        duracao_chuva = data_fim_chuva - data_inicio_chuva
+        duracao_minutos = duracao_chuva.total_seconds() / 60
         duracao_horas = duracao_minutos / 60
 
         # Armazenando os resultados no dicionário dados_ranking
         dados_ranking[f"{evento_chuvoso}"] = [data_inicio_chuva, data_fim_chuva, maior_chuva_evento, id_estacao_especifica, size_point, latitude, longitude, duracao_minutos, duracao_horas]
    
     df_dados_ranking = pd.DataFrame.from_dict(dados_ranking, orient='index')
-    
+
+    df_dados_ranking= df_dados_ranking.rename(columns={
+    0: "data_inicio_chuva",
+    1: "data_fim_chuva",
+    2: "maior_chuva_evento",
+    3: "id_estacao_especifica",
+    4: "size_point",
+    5: "latitude",
+    6: "longitude",
+    7: "duracao_minutos",
+    8: "duracao_horas"
+})
     return chuvas_fortes, df_eventos, df_dados_ranking
