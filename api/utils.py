@@ -148,9 +148,9 @@ def converte_mm_por_h(df):
     
     return df
 
-def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=None, quantidade_eventos=10, id_estacao=None):
+def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=None, quantidade_eventos=10, id_estacao=None, df_latitudes=None):
     """
-    Encontra as chuvas mais fortes em um DataFrame de dados meteorológicos.
+    Encontra as chuvas mais fortes em um DataFrame de dados meteorológicos e também adiciona informações de latitude.
 
     Parameters:
     - df (DataFrame): DataFrame contendo os dados meteorológicos.
@@ -159,6 +159,7 @@ def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=Non
     - data_fim (str, opcional): Data de término do período de busca (formato 'YYYY-MM-DD').
     - quantidade_eventos (int, opcional): Número de eventos a serem retornados (padrão é 10).
     - id_estacao (int, opcional): ID da estação meteorológica a ser filtrada.
+    - df_latitudes (DataFrame, opcional): DataFrame contendo informações de latitude e longitude.
 
     Returns:
     - tuple: Uma tupla contendo:
@@ -170,9 +171,10 @@ def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=Non
     Esta função recebe um DataFrame contendo dados meteorológicos e encontra as chuvas mais fortes com base em uma coluna de tempo especificada.
     É possível filtrar os eventos por período de tempo e/ou estação meteorológica.
     A função retorna uma lista com os identificadores dos eventos de chuva mais forte, um DataFrame com os dados desses eventos e um dicionário com informações sobre cada evento.
+    Também adiciona informações de latitude e longitude aos dados dos eventos.
 
     Example:
-    >>> eventos, df_eventos, dados_ranking = encontra_chuvas_mais_fortes(df_meteorologia, 'acumulado_chuva_1_h', data_inicio='2023-01-01', data_fim='2023-12-31', quantidade_eventos=5, id_estacao=1)
+    >>> eventos, df_eventos, dados_ranking = encontra_chuvas_mais_fortes_com_latitudes(df_meteorologia, 'acumulado_chuva_1_h', data_inicio='2023-01-01', data_fim='2023-12-31', quantidade_eventos=5, id_estacao=1, df_latitudes=df_latitudes)
     """
     # Filtrar o DataFrame pelas datas de início e fim, se fornecidas
     if data_inicio is not None and data_fim is not None:
@@ -196,17 +198,19 @@ def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=Non
     df_eventos = df[df['evento_chuvoso'].isin(chuvas_fortes)]
 
     dados_ranking = {}
-    for evento_chuvoso in chuvas_fortes:
+    total_iteracoes = len(chuvas_fortes)
+
+    for iter, evento_chuvoso in enumerate(chuvas_fortes):
         df_filtrado = df_eventos[df_eventos["evento_chuvoso"] == evento_chuvoso]
         
         # Ordenando o DataFrame por 'data_hora' em ordem ascendente
         df_filtrado = df_filtrado.sort_values(by='data_hora', ascending=True)
         
         # Pegando a data de início do evento
-        data_inicio = df_filtrado['data_hora'].iloc[0]
+        data_inicio_chuva = df_filtrado['data_hora'].iloc[0]
         
         # Pegando a data de término do evento
-        data_fim = df_filtrado['data_hora'].iloc[-1]
+        data_fim_chuva = df_filtrado['data_hora'].iloc[-1]
         
         # Ordenando o DataFrame por 'acumulado_chuva_1_h' em ordem descendente
         df_filtrado = df_filtrado.sort_values(by='acumulado_chuva_1_h', ascending=False)
@@ -214,7 +218,23 @@ def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=Non
         # Pegando a maior quantidade de chuva acumulada em 1 hora durante o evento
         maior_chuva_evento = df_filtrado["acumulado_chuva_1_h"].iloc[0]
         
+        # Adicionando o id específico
+        id_estacao_especifica = df_filtrado["id_estacao"].iloc[0]
+
+        # Size
+        size_point = max(10, 100 - int(iter / total_iteracoes * 90))
+        
+        # Adicionando informações de latitude e longitude
+        if df_latitudes is not None:
+            latitude = df_latitudes[df_latitudes['id_estacao'] == id_estacao_especifica]['latitude'].iloc[0]
+            longitude = df_latitudes[df_latitudes['id_estacao'] == id_estacao_especifica]['longitude'].iloc[0]
+        else:
+            latitude = None
+            longitude = None
+
         # Armazenando os resultados no dicionário dados_ranking
-        dados_ranking[f"{evento_chuvoso}"] = [data_inicio, data_fim, maior_chuva_evento]
-    
-    return chuvas_fortes, df_eventos, dados_ranking
+        dados_ranking[f"{evento_chuvoso}"] = [data_inicio_chuva, data_fim_chuva, maior_chuva_evento, id_estacao_especifica, size_point, latitude, longitude]
+   
+    df_dados_ranking = pd.DataFrame.from_dict(dados_ranking, orient='index')
+
+    return chuvas_fortes, df_eventos, df_dados_ranking
