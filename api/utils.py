@@ -209,10 +209,9 @@ def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=Non
         df_filtrado = df_filtrado.sort_values(by='data_hora', ascending=True)
         
         # Pegando a data de início do evento
-        data_inicio_chuva = df_filtrado['data_hora'].iloc[0]
-        
-        # Pegando a data de término do evento
-        data_fim_chuva = df_filtrado['data_hora'].iloc[-1]
+        data_inicio_chuva = df_filtrado['data_hora'].iloc[0].strftime('%Y-%m-%d %H:%M:%S')
+        data_fim_chuva = df_filtrado['data_hora'].iloc[-1].strftime('%Y-%m-%d %H:%M:%S')
+
         
         # Ordenando o DataFrame por 'acumulado_chuva_1_h' em ordem descendente
         df_filtrado = df_filtrado.sort_values(by='acumulado_chuva_1_h', ascending=False)
@@ -234,11 +233,9 @@ def encontra_chuvas_mais_fortes(df, coluna_tempo, data_inicio=None, data_fim=Non
             latitude = None
             longitude = None
 
-        # Convertendo as strings de data para objetos datetime
+        # Calculando a duração da chuva em minutos e horas
         data_inicio_chuva = datetime.strptime(data_inicio_chuva, "%Y-%m-%d %H:%M:%S")
         data_fim_chuva = datetime.strptime(data_fim_chuva, "%Y-%m-%d %H:%M:%S")
-
-        # Calculando a duração da chuva em minutos e horas
         duracao_chuva = data_fim_chuva - data_inicio_chuva
         duracao_minutos = duracao_chuva.total_seconds() / 60
         duracao_horas = duracao_minutos / 60
